@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { PersonAvatar } from "@/components/person-avatar";
 
 const LINKS: { href: string; label: string; roles: Role[] }[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["CREATOR", "COMPANY"] },
@@ -27,7 +27,7 @@ export function Nav() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const role = session?.user?.role;
-  const initial = (session?.user?.name || session?.user?.email || "?").charAt(0).toUpperCase();
+  const displayName = session?.user?.name || session?.user?.email || "?";
 
   return (
     <header className="border-b border-border">
@@ -53,9 +53,7 @@ export function Nav() {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <Avatar className="size-8">
-              <AvatarFallback>{initial}</AvatarFallback>
-            </Avatar>
+            <PersonAvatar name={displayName} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>

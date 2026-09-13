@@ -3,13 +3,13 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DeliverDialog } from "@/components/collaborations/deliver-dialog";
+import { StatusBadge } from "@/components/collaborations/status-badge";
+import { PersonAvatar } from "@/components/person-avatar";
 import { formatUSD, formatDate } from "@/lib/format";
-import { COLLAB_STATUS_LABELS } from "@/lib/constants";
 
 export type CollabRow = {
   id: string;
@@ -22,19 +22,6 @@ export type CollabRow = {
 };
 
 const TABS = ["All", "Active", "Needs action", "Completed"] as const;
-
-function statusVariant(status: CollabRow["status"]) {
-  switch (status) {
-    case "COMPLETED":
-      return "default" as const;
-    case "ACTIVE":
-      return "secondary" as const;
-    case "DECLINED":
-      return "outline" as const;
-    default:
-      return "outline" as const;
-  }
-}
 
 export function CollaborationsTable({
   rows,
@@ -89,11 +76,12 @@ export function CollaborationsTable({
       </TabsList>
       <TabsContent value={tab} className="mt-4">
         {filtered.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
+          <div className="rounded-xl border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
             Nothing here yet.
           </div>
         ) : (
-          <Table>
+          <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <Table className="[&_td]:px-4 [&_td]:py-3 [&_th]:px-4">
             <TableHeader>
               <TableRow>
                 <TableHead>{role === "CREATOR" ? "Brand" : "Creator"}</TableHead>
@@ -106,9 +94,14 @@ export function CollaborationsTable({
             <TableBody>
               {filtered.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell className="font-medium">{row.counterpartyName}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2.5">
+                      <PersonAvatar name={row.counterpartyName} size="sm" />
+                      {row.counterpartyName}
+                    </div>
+                  </TableCell>
                   <TableCell>
-                    <Badge variant={statusVariant(row.status)}>{COLLAB_STATUS_LABELS[row.status]}</Badge>
+                    <StatusBadge status={row.status} />
                   </TableCell>
                   <TableCell>{formatUSD(row.price)}</TableCell>
                   <TableCell>
@@ -159,6 +152,7 @@ export function CollaborationsTable({
               ))}
             </TableBody>
           </Table>
+          </div>
         )}
       </TabsContent>
     </Tabs>
