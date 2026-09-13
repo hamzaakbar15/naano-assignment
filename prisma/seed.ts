@@ -111,8 +111,9 @@ async function main() {
       creatorId: amina.profile.id,
       status: "PENDING",
       price: amina.profile.pricePerPost,
+      dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 days out
     },
-    update: {},
+    update: { dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) },
   });
 
   await prisma.collaboration.upsert({
@@ -123,8 +124,9 @@ async function main() {
       creatorId: carlos.profile.id,
       status: "ACTIVE",
       price: carlos.profile.pricePerPost,
+      dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days out
     },
-    update: {},
+    update: { dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000) },
   });
 
   await prisma.collaboration.upsert({
