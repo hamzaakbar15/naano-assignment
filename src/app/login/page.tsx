@@ -1,17 +1,15 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthLayout } from "@/components/auth/auth-layout";
 import { LoginForm } from "@/components/auth/login-form";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-xl">Sign in</CardTitle>
-          <CardDescription>Welcome back to Naano.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <AuthLayout>
+      <div className="w-full max-w-sm">
+        <h1 className="text-xl font-semibold tracking-tight">Sign in</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Welcome back to Naano.</p>
+        <div className="mt-6 space-y-4">
           <Suspense>
             <LoginForm />
           </Suspense>
@@ -21,8 +19,8 @@ export default function LoginPage() {
               Register
             </Link>
           </p>
-        </CardContent>
-      </Card>
-    </main>
+        </div>
+      </div>
+    </AuthLayout>
   );
 }

@@ -4,20 +4,23 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Briefcase, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const ROLE_COPY = {
   creator: {
     title: "I'm a creator",
     description: "Get booked by companies to publish sponsored LinkedIn posts.",
+    icon: Megaphone,
   },
   company: {
     title: "I'm a company",
     description: "Browse creators and book sponsored posts at a fixed price.",
+    icon: Briefcase,
   },
 } as const;
 
@@ -32,17 +35,35 @@ export function RegisterForm() {
 
 function RolePicker() {
   return (
-    <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
-      {(Object.keys(ROLE_COPY) as Array<keyof typeof ROLE_COPY>).map((key) => (
-        <Link key={key} href={`/register?role=${key}`}>
-          <Card className="h-full transition-colors hover:bg-muted/50">
-            <CardHeader>
-              <CardTitle>{ROLE_COPY[key].title}</CardTitle>
-              <CardDescription>{ROLE_COPY[key].description}</CardDescription>
-            </CardHeader>
-          </Card>
+    <div className="w-full max-w-sm">
+      <h1 className="text-xl font-semibold tracking-tight">Join Naano</h1>
+      <p className="mt-1 text-sm text-muted-foreground">Pick how you&apos;ll use it.</p>
+      <div className="mt-6 space-y-3">
+        {(Object.keys(ROLE_COPY) as Array<keyof typeof ROLE_COPY>).map((key) => {
+          const Icon = ROLE_COPY[key].icon;
+          return (
+            <Link
+              key={key}
+              href={`/register?role=${key}`}
+              className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-muted/60"
+            >
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted">
+                <Icon className="size-4.5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">{ROLE_COPY[key].title}</p>
+                <p className="text-xs text-muted-foreground">{ROLE_COPY[key].description}</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link href="/login" className="font-medium text-foreground underline underline-offset-4">
+          Sign in
         </Link>
-      ))}
+      </p>
     </div>
   );
 }
@@ -84,12 +105,10 @@ function SignupForm({ role }: { role: "creator" | "company" }) {
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>{ROLE_COPY[role].title}</CardTitle>
-        <CardDescription>{ROLE_COPY[role].description}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="w-full max-w-sm">
+      <h1 className="text-xl font-semibold tracking-tight">{ROLE_COPY[role].title}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{ROLE_COPY[role].description}</p>
+      <div className={cn("mt-6 space-y-4", error && "mt-4")}>
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
@@ -133,7 +152,7 @@ function SignupForm({ role }: { role: "creator" | "company" }) {
             Choose a different role
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

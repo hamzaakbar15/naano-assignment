@@ -45,7 +45,9 @@ export function MarketplaceFilters() {
         onValueChange={(value) => updateParams({ industry: value ? String(value) : "all" })}
       >
         <SelectTrigger className="sm:w-56">
-          <SelectValue placeholder="All industries" />
+          <SelectValue placeholder="All industries">
+            {(value: string) => (value === "all" ? "All industries" : value)}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All industries</SelectItem>
