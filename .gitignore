@@ -1,0 +1,4 @@
+# Per-session scratch state for the .claude/hooks/capture.js log hook
+# (current-model tracking + turn counters). Not part of the submission log;
+# .agent-logs/ itself is intentionally NOT ignored - it ships with the repo.
+.claude/hooks/.state/
