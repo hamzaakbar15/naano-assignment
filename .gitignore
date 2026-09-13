@@ -3,6 +3,9 @@
 # .agent-logs/ itself is intentionally NOT ignored - it ships with the repo.
 .claude/hooks/.state/
 
+# Personal Claude Code permission overrides for this project - not a team policy.
+.claude/settings.local.json
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
