@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Users } from "lucide-react";
+import { Users, SearchX } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "@/components/person-avatar";
+import { EmptyState } from "@/components/empty-state";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
 import { BookButton } from "@/components/marketplace/book-button";
 import { formatUSD } from "@/lib/format";
@@ -46,9 +47,15 @@ export default async function MarketplacePage({
       <MarketplaceFilters />
 
       {creators.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
-          No creators match those filters yet.
-        </div>
+        <EmptyState
+          icon={q || industry ? SearchX : Users}
+          title={q || industry ? "No creators match those filters" : "No creators yet"}
+          description={
+            q || industry
+              ? "Try a different search term or industry."
+              : "Check back soon — new creators join regularly."
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {creators.map((creator) => {

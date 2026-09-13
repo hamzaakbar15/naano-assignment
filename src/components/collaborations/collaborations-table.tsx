@@ -3,13 +3,22 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Inbox, Clock3, Loader2, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DeliverDialog } from "@/components/collaborations/deliver-dialog";
 import { StatusBadge } from "@/components/collaborations/status-badge";
 import { PersonAvatar } from "@/components/person-avatar";
+import { EmptyState } from "@/components/empty-state";
 import { formatUSD, formatDate } from "@/lib/format";
+
+const EMPTY_COPY = {
+  All: { icon: Inbox, title: "No collaborations yet" },
+  Active: { icon: Loader2, title: "Nothing active right now" },
+  "Needs action": { icon: Clock3, title: "Nothing needs your attention" },
+  Completed: { icon: PartyPopper, title: "Nothing completed yet" },
+} as const;
 
 export type CollabRow = {
   id: string;
@@ -76,9 +85,17 @@ export function CollaborationsTable({
       </TabsList>
       <TabsContent value={tab} className="mt-4">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
-            Nothing here yet.
-          </div>
+          <EmptyState
+            icon={EMPTY_COPY[tab].icon}
+            title={EMPTY_COPY[tab].title}
+            description={
+              tab === "All"
+                ? role === "COMPANY"
+                  ? "Book a creator from the marketplace to get started."
+                  : "Companies will show up here once they book you."
+                : undefined
+            }
+          />
         ) : (
           <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
           <Table className="[&_td]:px-4 [&_td]:py-3 [&_th]:px-4">

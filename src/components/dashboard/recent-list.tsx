@@ -1,7 +1,8 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import { PersonAvatar } from "@/components/person-avatar";
 import { StatusBadge } from "@/components/collaborations/status-badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { formatUSD } from "@/lib/format";
 import type { CollabStatus } from "@prisma/client";
 
@@ -12,13 +13,19 @@ export type RecentItem = {
   price: number;
 };
 
-export function RecentList({ items, emptyLabel }: { items: RecentItem[]; emptyLabel: string }) {
+export function RecentList({
+  items,
+  emptyIcon,
+  emptyTitle,
+  emptyDescription,
+}: {
+  items: RecentItem[];
+  emptyIcon: LucideIcon;
+  emptyTitle: string;
+  emptyDescription: string;
+}) {
   if (items.length === 0) {
-    return (
-      <Card>
-        <CardContent className="py-10 text-center text-sm text-muted-foreground">{emptyLabel}</CardContent>
-      </Card>
-    );
+    return <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />;
   }
 
   return (

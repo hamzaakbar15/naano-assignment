@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock3, Loader2, CheckCircle2, Wallet } from "lucide-react";
+import { Clock3, Loader2, CheckCircle2, Wallet, Inbox } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/stat-card";
@@ -50,7 +50,12 @@ export default async function DashboardPage() {
         </div>
         <div>
           <h2 className="mb-3 text-sm font-medium text-muted-foreground">Recent activity</h2>
-          <RecentList items={recent} emptyLabel="Collaborations you're booked for will show up here." />
+          <RecentList
+            items={recent}
+            emptyIcon={Inbox}
+            emptyTitle="No activity yet"
+            emptyDescription="Collaborations you're booked for will show up here."
+          />
         </div>
       </div>
     );
@@ -97,7 +102,12 @@ export default async function DashboardPage() {
       </div>
       <div>
         <h2 className="mb-3 text-sm font-medium text-muted-foreground">Recent activity</h2>
-        <RecentList items={recent} emptyLabel="Nothing booked yet — browse the marketplace to get started." />
+        <RecentList
+          items={recent}
+          emptyIcon={Inbox}
+          emptyTitle="No activity yet"
+          emptyDescription="Nothing booked yet — browse the marketplace to get started."
+        />
       </div>
     </div>
   );

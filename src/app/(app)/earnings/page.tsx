@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/stat-card";
 import { PersonAvatar } from "@/components/person-avatar";
+import { EmptyState } from "@/components/empty-state";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatUSD, formatDate } from "@/lib/format";
 
@@ -32,9 +33,11 @@ export default async function EarningsPage() {
       </div>
 
       {completed.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border py-16 text-center text-sm text-muted-foreground">
-          Completed collaborations will show up here.
-        </div>
+        <EmptyState
+          icon={Wallet}
+          title="No earnings yet"
+          description="Completed collaborations show up here once a post is delivered."
+        />
       ) : (
         <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
           <Table className="[&_td]:px-4 [&_td]:py-3 [&_th]:px-4">
