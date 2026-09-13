@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // bcrypt hash; Credentials-only auth, no OAuth path in scope
+  name      String?
+  role      Role
+  createdAt DateTime @default(now())
+
+  creatorProfile CreatorProfile?
+  companyProfile CompanyProfile?
+}
+
+enum Role {
+  CREATOR
+  COMPANY
+}
+
+model CreatorProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  linkedinUrl  String?
+  country      String?
+  industries   String[] // simple string array, max 3 enforced in UI
+  pricePerPost Int // whole currency units (e.g. USD), not cents
+  headline     String?
+
+  collaborations Collaboration[]
+
+  @@index([country])
+}
+
+model CompanyProfile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName String
+  website     String?
+
+  collaborations Collaboration[]
+}
+
+model Collaboration {
+  id         String         @id @default(cuid())
+  companyId  String
+  company    CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorId  String
+  creator    CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  status     CollabStatus   @default(PENDING)
+  price      Int
+  dueDate    DateTime?
+  postUrl    String? // filled in when creator "delivers"
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([companyId])
+  @@index([creatorId])
+  @@index([status])
+}
+
+enum CollabStatus {
+  PENDING // company booked, awaiting creator response
+  DECLINED
+  ACTIVE // creator accepted, post not yet delivered
+  COMPLETED // post delivered
+}
