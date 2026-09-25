@@ -93,7 +93,12 @@ export default async function MarketplacePage({
                   </div>
                 </CardContent>
                 <CardFooter className="flex gap-2">
-                  <Button variant="outline" className="flex-1" render={<Link href={`/marketplace/${creator.id}`} />}>
+                  {/* No prefetch: one per card would mean a burst of server renders on every marketplace load. */}
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    render={<Link href={`/marketplace/${creator.id}`} prefetch={false} />}
+                  >
                     View profile
                   </Button>
                   <BookButton creatorId={creator.id} />

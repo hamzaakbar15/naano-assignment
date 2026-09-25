@@ -23,10 +23,12 @@ const LINKS: { href: string; label: string; roles: Role[] }[] = [
   { href: "/earnings", label: "Earnings", roles: ["CREATOR"] },
 ];
 
-export function Nav() {
+// `role` comes from the server layout rather than useSession(): until the
+// client session resolves, role would be undefined and every link (including
+// the other role's page) would render and be prefetched.
+export function Nav({ role }: { role: Role }) {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const role = session?.user?.role;
   const displayName = session?.user?.name || session?.user?.email || "?";
 
   return (
@@ -37,7 +39,7 @@ export function Nav() {
             Naano
           </Link>
           <nav className="hidden items-center gap-1 sm:flex">
-            {LINKS.filter((l) => !role || l.roles.includes(role)).map((l) => (
+            {LINKS.filter((l) => l.roles.includes(role)).map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -69,7 +71,7 @@ export function Nav() {
         </DropdownMenu>
       </div>
       <nav className="flex items-center gap-1 overflow-x-auto border-t border-border px-4 py-1.5 sm:hidden">
-        {LINKS.filter((l) => !role || l.roles.includes(role)).map((l) => (
+        {LINKS.filter((l) => l.roles.includes(role)).map((l) => (
           <Link
             key={l.href}
             href={l.href}

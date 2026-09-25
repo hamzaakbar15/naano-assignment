@@ -16,7 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-background">
-      <Nav />
+      <Nav role={user.role} />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>
   );
