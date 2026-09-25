@@ -103,56 +103,61 @@ async function main() {
 
   // One of each status, spread across both companies, so every UI state
   // (needs action / active / completed / declined) has at least one row.
-  await prisma.collaboration.upsert({
-    where: { id: "seed-collab-pending" },
-    create: {
+  //
+  // These rows are RESET to their pristine state on every run (the `update`
+  // side repeats the full field set), so re-running the seed restores the demo
+  // after someone has clicked through accept / deliver on them. That's what
+  // lets a reviewer signing in as the demo creator always find a pending
+  // request to accept and an active one to deliver.
+  const days = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000);
+
+  const seedCollabs = [
+    {
       id: "seed-collab-pending",
       companyId: fluxbase.profile.id,
       creatorId: amina.profile.id,
-      status: "PENDING",
+      status: "PENDING" as const,
       price: amina.profile.pricePerPost,
-      dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 days out
+      postUrl: null,
+      dueDate: days(10),
     },
-    update: { dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) },
-  });
-
-  await prisma.collaboration.upsert({
-    where: { id: "seed-collab-active" },
-    create: {
+    {
       id: "seed-collab-active",
       companyId: fluxbase.profile.id,
       creatorId: carlos.profile.id,
-      status: "ACTIVE",
+      status: "ACTIVE" as const,
       price: carlos.profile.pricePerPost,
-      dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days out
+      postUrl: null,
+      dueDate: days(4),
     },
-    update: { dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000) },
-  });
-
-  await prisma.collaboration.upsert({
-    where: { id: "seed-collab-completed" },
-    create: {
+    {
       id: "seed-collab-completed",
       companyId: ledgerly.profile.id,
       creatorId: amina.profile.id,
-      status: "COMPLETED",
+      status: "COMPLETED" as const,
       price: amina.profile.pricePerPost,
       postUrl: "https://linkedin.com/posts/amina-demo-sponsored-post",
+      dueDate: null,
     },
-    update: {},
-  });
-
-  await prisma.collaboration.upsert({
-    where: { id: "seed-collab-declined" },
-    create: {
+    {
       id: "seed-collab-declined",
       companyId: ledgerly.profile.id,
       creatorId: priya.profile.id,
-      status: "DECLINED",
+      status: "DECLINED" as const,
       price: priya.profile.pricePerPost,
+      postUrl: null,
+      dueDate: null,
     },
-    update: {},
-  });
+  ];
+
+  for (const collab of seedCollabs) {
+    const { id, ...fields } = collab;
+    await prisma.collaboration.upsert({
+      where: { id },
+      create: collab,
+      update: fields,
+    });
+  }
 
   console.log("Seeded. Demo accounts (all share the password below):");
   console.log(`  password: ${DEMO_PASSWORD}`);
