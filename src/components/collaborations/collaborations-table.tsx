@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Inbox, Clock3, Loader2, PartyPopper } from "lucide-react";
+import Link from "next/link";
+import { Inbox, Clock3, Loader2, MessageSquare, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -28,6 +29,8 @@ export type CollabRow = {
   dueDate: string | null;
   createdAt: string;
   counterpartyName: string;
+  /** The pair's message thread (opened by their first booking). */
+  conversationId: string | null;
 };
 
 const TABS = ["All", "Active", "Needs action", "Completed"] as const;
@@ -126,6 +129,17 @@ export function CollaborationsTable({
                     <div className="flex items-center gap-2.5 font-heading">
                       <PersonAvatar name={row.counterpartyName} size="sm" />
                       {row.counterpartyName}
+                      {row.conversationId && (
+                        <Link
+                          href={`/messages?c=${row.conversationId}`}
+                          prefetch={false}
+                          aria-label={`Message ${row.counterpartyName}`}
+                          title={`Message ${row.counterpartyName}`}
+                          className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-primary-soft hover:text-primary"
+                        >
+                          <MessageSquare className="size-3.5" />
+                        </Link>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell>

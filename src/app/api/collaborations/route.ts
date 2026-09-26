@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import { ensureConversation } from "@/lib/messages";
 
 /** Company books a creator -> new Collaboration in PENDING. */
 export async function POST(req: Request) {
@@ -44,6 +45,9 @@ export async function POST(req: Request) {
       dueDate: parsedDueDate,
     },
   });
+
+  // A pair's first booking opens their message thread; repeat bookings reuse it.
+  await ensureConversation(company.id, creator.id);
 
   return NextResponse.json({ collaboration }, { status: 201 });
 }

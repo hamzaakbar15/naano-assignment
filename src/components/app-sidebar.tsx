@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { Handshake, LayoutDashboard, LogOut, Store, Wallet, type LucideIcon } from "lucide-react";
+import { Handshake, LayoutDashboard, LogOut, MessagesSquare, Store, Wallet, type LucideIcon } from "lucide-react";
 import type { Role } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
@@ -15,6 +15,7 @@ const LINKS: { href: string; label: string; icon: LucideIcon; roles: Role[] }[] 
   { href: "/marketplace", label: "Marketplace", icon: Store, roles: ["COMPANY"] },
   { href: "/collaborations", label: "Collaborations", icon: Handshake, roles: ["CREATOR", "COMPANY"] },
   { href: "/earnings", label: "Earnings", icon: Wallet, roles: ["CREATOR"] },
+  { href: "/messages", label: "Messages", icon: MessagesSquare, roles: ["CREATOR", "COMPANY"] },
 ];
 
 type ShellUser = { role: Role; name: string | null; email: string | null };

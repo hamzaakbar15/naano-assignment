@@ -17,6 +17,7 @@ model User {
 
   creatorProfile CreatorProfile?
   companyProfile CompanyProfile?
+  messages       Message[]
 }
 
 enum Role {
@@ -35,6 +36,7 @@ model CreatorProfile {
   headline     String?
 
   collaborations Collaboration[]
+  conversations  Conversation[]
 
   @@index([country])
 }
@@ -47,24 +49,57 @@ model CompanyProfile {
   website     String?
 
   collaborations Collaboration[]
+  conversations  Conversation[]
 }
 
 model Collaboration {
-  id         String         @id @default(cuid())
-  companyId  String
-  company    CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  creatorId  String
-  creator    CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  status     CollabStatus   @default(PENDING)
-  price      Int
-  dueDate    DateTime?
-  postUrl    String? // filled in when creator "delivers"
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  id        String         @id @default(cuid())
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorId String
+  creator   CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  status    CollabStatus   @default(PENDING)
+  price     Int
+  dueDate   DateTime?
+  postUrl   String? // filled in when creator "delivers"
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   @@index([companyId])
   @@index([creatorId])
   @@index([status])
+}
+
+// One thread per company-creator pair, opened by their first booking; later
+// bookings between the same pair continue in it. Each side keeps a last-read
+// timestamp so unread counts are just "messages from the other side since".
+model Conversation {
+  id                String         @id @default(cuid())
+  companyId         String
+  company           CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorId         String
+  creator           CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  lastMessageAt     DateTime?
+  companyLastReadAt DateTime?
+  creatorLastReadAt DateTime?
+  createdAt         DateTime       @default(now())
+
+  messages Message[]
+
+  @@unique([companyId, creatorId])
+  @@index([creatorId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body           String
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
 }
 
 enum CollabStatus {

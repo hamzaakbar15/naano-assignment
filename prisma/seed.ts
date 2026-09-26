@@ -159,6 +159,17 @@ async function main() {
     });
   }
 
+  // Every booked pair has a message thread (bookings open them in the app).
+  const pairs = new Set(seedCollabs.map((c) => `${c.companyId}:${c.creatorId}`));
+  for (const pair of Array.from(pairs)) {
+    const [companyId, creatorId] = pair.split(":");
+    await prisma.conversation.upsert({
+      where: { companyId_creatorId: { companyId, creatorId } },
+      create: { companyId, creatorId },
+      update: {},
+    });
+  }
+
   console.log("Seeded. Demo accounts (all share the password below):");
   console.log(`  password: ${DEMO_PASSWORD}`);
   for (const { user } of [...creators, ...companies]) {

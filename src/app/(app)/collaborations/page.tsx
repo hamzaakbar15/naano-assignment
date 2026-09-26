@@ -10,6 +10,8 @@ export default async function CollaborationsPage() {
 
   if (user.role === "CREATOR") {
     const profile = await prisma.creatorProfile.findUniqueOrThrow({ where: { userId: user.id } });
+    const threads = await prisma.conversation.findMany({ where: { creatorId: profile.id }, select: { id: true, companyId: true } });
+    const threadByCompany = new Map(threads.map((t) => [t.companyId, t.id]));
     const collaborations = await prisma.collaboration.findMany({
       where: { creatorId: profile.id },
       include: { company: { select: { companyName: true } } },
@@ -23,9 +25,12 @@ export default async function CollaborationsPage() {
       dueDate: c.dueDate?.toISOString() ?? null,
       createdAt: c.createdAt.toISOString(),
       counterpartyName: c.company.companyName,
+      conversationId: threadByCompany.get(c.companyId) ?? null,
     }));
   } else {
     const profile = await prisma.companyProfile.findUniqueOrThrow({ where: { userId: user.id } });
+    const threads = await prisma.conversation.findMany({ where: { companyId: profile.id }, select: { id: true, creatorId: true } });
+    const threadByCreator = new Map(threads.map((t) => [t.creatorId, t.id]));
     const collaborations = await prisma.collaboration.findMany({
       where: { companyId: profile.id },
       include: { creator: { select: { user: { select: { name: true } } } } },
@@ -39,6 +44,7 @@ export default async function CollaborationsPage() {
       dueDate: c.dueDate?.toISOString() ?? null,
       createdAt: c.createdAt.toISOString(),
       counterpartyName: c.creator.user.name || "Unnamed creator",
+      conversationId: threadByCreator.get(c.creatorId) ?? null,
     }));
   }
 
