@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Users, SearchX } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "@/components/person-avatar";
 import { EmptyState } from "@/components/empty-state";
@@ -37,23 +35,29 @@ export default async function MarketplacePage({
     orderBy: { pricePerPost: "asc" },
   });
 
+  const filtered = Boolean(q || industry);
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Marketplace</h1>
-        <p className="text-sm text-muted-foreground">Browse creators and book a sponsored post.</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">Marketplace</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Browse creators and book a sponsored post.</p>
+        </div>
+        <p className="font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+          {creators.length} {creators.length === 1 ? "creator" : "creators"}
+          {filtered ? " matching" : ""}
+        </p>
       </div>
 
       <MarketplaceFilters />
 
       {creators.length === 0 ? (
         <EmptyState
-          icon={q || industry ? SearchX : Users}
-          title={q || industry ? "No creators match those filters" : "No creators yet"}
+          icon={filtered ? SearchX : Users}
+          title={filtered ? "No creators match those filters" : "No creators yet"}
           description={
-            q || industry
-              ? "Try a different search term or industry."
-              : "Check back soon — new creators join regularly."
+            filtered ? "Try a different search term or industry." : "Check back soon — new creators join regularly."
           }
         />
       ) : (
@@ -61,49 +65,58 @@ export default async function MarketplacePage({
           {creators.map((creator) => {
             const name = creator.user.name || "Unnamed creator";
             return (
-              <Card
+              <div
                 key={creator.id}
-                className="flex flex-col transition-shadow hover:shadow-md hover:ring-foreground/20"
+                className="flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
               >
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <PersonAvatar name={name} />
-                    <div className="min-w-0">
-                      <p className="truncate font-medium">{name}</p>
-                      {creator.country && (
-                        <p className="truncate text-sm text-muted-foreground">{creator.country}</p>
-                      )}
-                    </div>
+                <div className="flex items-center gap-3">
+                  <PersonAvatar name={name} />
+                  <div className="min-w-0">
+                    <p className="truncate font-heading font-medium">{name}</p>
+                    {creator.country && <p className="truncate text-sm text-muted-foreground">{creator.country}</p>}
                   </div>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {creator.industries.map((i) => (
-                      <Badge key={i} variant="secondary">
-                        {i}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-lg font-semibold">{formatUSD(creator.pricePerPost)} / post</p>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Users className="size-3.5" />
-                      {estimateReach(creator.id).toLocaleString()}
+                </div>
+
+                {creator.headline && (
+                  <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{creator.headline}</p>
+                )}
+
+                <div className="mt-3 flex flex-1 flex-wrap content-start gap-1.5">
+                  {creator.industries.map((i) => (
+                    <span key={i} className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                      {i}
                     </span>
+                  ))}
+                </div>
+
+                <div className="mt-4 flex items-end justify-between border-t border-border pt-4">
+                  <div>
+                    <p className="font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+                      Per post
+                    </p>
+                    <p className="mt-0.5 font-mono text-xl font-semibold">{formatUSD(creator.pricePerPost)}</p>
                   </div>
-                </CardContent>
-                <CardFooter className="flex gap-2">
+                  <div className="text-right">
+                    <p className="font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+                      Est. reach
+                    </p>
+                    <p className="mt-0.5 font-mono text-sm">{estimateReach(creator.id).toLocaleString()}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex gap-2">
                   {/* No prefetch: one per card would mean a burst of server renders on every marketplace load. */}
                   <Button
                     variant="outline"
                     className="flex-1"
+                    nativeButton={false}
                     render={<Link href={`/marketplace/${creator.id}`} prefetch={false} />}
                   >
                     View profile
                   </Button>
-                  <BookButton creatorId={creator.id} />
-                </CardFooter>
-              </Card>
+                  <BookButton creatorId={creator.id} className="flex-1" />
+                </div>
+              </div>
             );
           })}
         </div>

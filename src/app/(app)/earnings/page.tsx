@@ -23,13 +23,13 @@ export default async function EarningsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Earnings</h1>
-        <p className="text-sm text-muted-foreground">Mocked balance — no real payout method yet.</p>
+        <h1 className="text-3xl font-semibold tracking-tight">Earnings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Earnings from delivered posts. No payout method connected yet.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <StatCard label="Total earned" value={formatUSD(total)} icon={Wallet} tone="violet" />
-        <StatCard label="Paid collaborations" value={completed.length} icon={CheckCircle2} tone="emerald" />
+        <StatCard label="Total earned" value={formatUSD(total)} icon={Wallet} featured />
+        <StatCard label="Paid collaborations" value={completed.length} icon={CheckCircle2} tone="completed" />
       </div>
 
       {completed.length === 0 ? (
@@ -39,8 +39,8 @@ export default async function EarningsPage() {
           description="Completed collaborations show up here once a post is delivered."
         />
       ) : (
-        <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-          <Table className="[&_td]:px-4 [&_td]:py-3 [&_th]:px-4">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <Table className="[&_td]:px-5 [&_td]:py-3.5 [&_th]:px-5 [&_thead_tr]:bg-muted/40">
             <TableHeader>
               <TableRow>
                 <TableHead>Brand</TableHead>
@@ -53,20 +53,20 @@ export default async function EarningsPage() {
               {completed.map((c) => (
                 <TableRow key={c.id}>
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2.5 font-heading">
                       <PersonAvatar name={c.company.companyName} size="sm" />
                       {c.company.companyName}
                     </div>
                   </TableCell>
-                  <TableCell>{formatUSD(c.price)}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(c.updatedAt)}</TableCell>
+                  <TableCell className="font-mono tabular-nums">{formatUSD(c.price)}</TableCell>
+                  <TableCell className="font-mono text-muted-foreground tabular-nums">{formatDate(c.updatedAt)}</TableCell>
                   <TableCell>
                     {c.postUrl ? (
                       <a
                         href={c.postUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium underline underline-offset-4"
+                        className="font-heading font-medium text-primary underline-offset-4 hover:underline"
                       >
                         View ↗
                       </a>

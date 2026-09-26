@@ -1,13 +1,11 @@
 import type { LucideIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const TONES = {
   neutral: "bg-muted text-foreground",
-  amber: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
-  blue: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300",
-  emerald: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
-  violet: "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+  pending: "bg-status-pending-bg text-status-pending",
+  active: "bg-status-active-bg text-status-active",
+  completed: "bg-status-completed-bg text-status-completed",
 } as const;
 
 export function StatCard({
@@ -16,27 +14,45 @@ export function StatCard({
   hint,
   icon: Icon,
   tone = "neutral",
+  featured = false,
 }: {
   label: string;
   value: string | number;
   hint?: string;
   icon?: LucideIcon;
   tone?: keyof typeof TONES;
+  /** Brand-gradient treatment - reserved for the headline money figure. */
+  featured?: boolean;
 }) {
   return (
-    <Card>
-      <CardContent className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight">{value}</p>
-          {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+    <div
+      className={cn(
+        "flex items-start justify-between gap-3 rounded-xl p-5",
+        featured ? "bg-brand-gradient text-white" : "border border-border bg-card text-card-foreground"
+      )}
+    >
+      <div className="min-w-0">
+        <p
+          className={cn(
+            "font-mono text-[11px] font-medium tracking-wider uppercase",
+            featured ? "text-white/80" : "text-muted-foreground"
+          )}
+        >
+          {label}
+        </p>
+        <p className="mt-2 font-mono text-2xl font-semibold tracking-tight">{value}</p>
+        {hint && <p className={cn("mt-1 text-xs", featured ? "text-white/75" : "text-muted-foreground")}>{hint}</p>}
+      </div>
+      {Icon && (
+        <div
+          className={cn(
+            "flex size-9 shrink-0 items-center justify-center rounded-md",
+            featured ? "bg-white/15 text-white" : TONES[tone]
+          )}
+        >
+          <Icon className="size-4.5" />
         </div>
-        {Icon && (
-          <div className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", TONES[tone])}>
-            <Icon className="size-4.5" />
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }

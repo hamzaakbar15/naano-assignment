@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { IBM_Plex_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+// Headings / nav / buttons
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
+// Body text
+const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-sans",
+});
+// Numbers / stats / table data / uppercase labels
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
   title: "Naano — Book LinkedIn creators",
@@ -19,9 +28,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn("font-sans", spaceGrotesk.variable, plexSans.variable, jetbrainsMono.variable)}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
-        <NextTopLoader color="#171717" height={3} showSpinner={false} shadow={false} />
+        <NextTopLoader color="#4a5af0" height={3} showSpinner={false} shadow={false} />
+        {/* Brand strip across the very top of every page; the spacer keeps content clear of it. */}
+        <div className="bg-brand-strip fixed inset-x-0 top-0 z-50 h-[3px]" aria-hidden />
+        <div className="h-[3px]" aria-hidden />
         <Providers>
           {children}
           <Toaster />

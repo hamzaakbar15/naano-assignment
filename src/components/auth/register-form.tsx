@@ -36,7 +36,7 @@ export function RegisterForm() {
 function RolePicker() {
   return (
     <div className="w-full max-w-sm">
-      <h1 className="text-xl font-semibold tracking-tight">Join Naano</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Join Naano</h1>
       <p className="mt-1 text-sm text-muted-foreground">Pick how you&apos;ll use it.</p>
       <div className="mt-6 space-y-3">
         {(Object.keys(ROLE_COPY) as Array<keyof typeof ROLE_COPY>).map((key) => {

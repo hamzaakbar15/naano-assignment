@@ -13,7 +13,7 @@ export default function MarketplaceLoading() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-3 rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+          <div key={i} className="space-y-3 rounded-xl border border-border bg-card p-5">
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-3.5 w-20" />
             <div className="flex gap-1.5">

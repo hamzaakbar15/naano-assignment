@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { Nav } from "@/components/nav";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
@@ -15,9 +15,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!hasProfile) redirect("/onboarding");
 
   return (
-    <div className="min-h-screen bg-background">
-      <Nav role={user.role} />
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
+    <div className="min-h-[calc(100dvh-3px)] bg-background">
+      <AppSidebar user={{ role: user.role, name: user.name ?? null, email: user.email ?? null }} />
+      <div className="md:pl-64">
+        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-8 md:py-10">{children}</main>
+      </div>
     </div>
   );
 }

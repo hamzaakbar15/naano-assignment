@@ -15,8 +15,8 @@ export function PersonAvatar({
   const sizeClass = size === "sm" ? "size-7 text-xs" : size === "lg" ? "size-12 text-base" : "size-9 text-sm";
 
   return (
-    <Avatar className={cn(sizeClass, className)}>
-      <AvatarFallback className={cn(color.bg, color.text, "font-medium")}>
+    <Avatar className={cn(sizeClass, "rounded-md after:rounded-md", className)}>
+      <AvatarFallback className={cn(color.bg, color.text, "rounded-md font-heading font-medium")}>
         {initials(name)}
       </AvatarFallback>
     </Avatar>

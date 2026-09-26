@@ -21,7 +21,7 @@ export default function RootError({ error, reset }: { error: Error & { digest?: 
       </p>
       <div className="mt-2 flex gap-3">
         <Button onClick={reset}>Try again</Button>
-        <Button variant="outline" render={<Link href="/" />}>
+        <Button variant="outline" nativeButton={false} render={<Link href="/" />}>
           Go home
         </Button>
       </div>

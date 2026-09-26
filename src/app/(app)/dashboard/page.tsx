@@ -33,23 +33,23 @@ export default async function DashboardPage() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome back{user.name ? `, ${user.name}` : ""}</h1>
-          <p className="text-sm text-muted-foreground">Here&apos;s how your collaborations are going.</p>
+          <h1 className="text-3xl font-semibold tracking-tight">Welcome back{user.name ? `, ${user.name}` : ""}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Here&apos;s how your collaborations are going.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Needs action" value={pending} hint="Pending requests" icon={Clock3} tone="amber" />
-          <StatCard label="Active" value={active} hint="Not yet delivered" icon={Loader2} tone="blue" />
-          <StatCard label="Completed" value={completed.length} icon={CheckCircle2} tone="emerald" />
-          <StatCard label="Total earned" value={formatUSD(totalEarned)} icon={Wallet} tone="violet" />
+          <StatCard label="Needs action" value={pending} hint="Pending requests" icon={Clock3} tone="pending" />
+          <StatCard label="Active" value={active} hint="Not yet delivered" icon={Loader2} tone="active" />
+          <StatCard label="Completed" value={completed.length} icon={CheckCircle2} tone="completed" />
+          <StatCard label="Total earned" value={formatUSD(totalEarned)} icon={Wallet} featured />
         </div>
         <div className="flex gap-3">
-          <Button render={<Link href="/collaborations" />}>View collaborations</Button>
-          <Button variant="outline" render={<Link href="/earnings" />}>
+          <Button nativeButton={false} render={<Link href="/collaborations" />}>View collaborations</Button>
+          <Button variant="outline" nativeButton={false} render={<Link href="/earnings" />}>
             View earnings
           </Button>
         </div>
         <div>
-          <h2 className="mb-3 text-sm font-medium text-muted-foreground">Recent activity</h2>
+          <h2 className="mb-3 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">Recent activity</h2>
           <RecentList
             items={recent}
             emptyIcon={Inbox}
@@ -85,23 +85,23 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome back{user.name ? `, ${user.name}` : ""}</h1>
-        <p className="text-sm text-muted-foreground">Here&apos;s your booking activity.</p>
+        <h1 className="text-3xl font-semibold tracking-tight">Welcome back{user.name ? `, ${user.name}` : ""}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Here&apos;s your booking activity.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Awaiting response" value={pending} icon={Clock3} tone="amber" />
-        <StatCard label="Active" value={active} hint="Not yet delivered" icon={Loader2} tone="blue" />
-        <StatCard label="Completed" value={completed.length} icon={CheckCircle2} tone="emerald" />
-        <StatCard label="Total spent" value={formatUSD(totalSpent)} hint="Active + completed" icon={Wallet} tone="violet" />
+        <StatCard label="Awaiting response" value={pending} icon={Clock3} tone="pending" />
+        <StatCard label="Active" value={active} hint="Not yet delivered" icon={Loader2} tone="active" />
+        <StatCard label="Completed" value={completed.length} icon={CheckCircle2} tone="completed" />
+        <StatCard label="Total spent" value={formatUSD(totalSpent)} hint="Active + completed" icon={Wallet} featured />
       </div>
       <div className="flex gap-3">
-        <Button render={<Link href="/marketplace" />}>Browse marketplace</Button>
-        <Button variant="outline" render={<Link href="/collaborations" />}>
+        <Button nativeButton={false} render={<Link href="/marketplace" />}>Browse marketplace</Button>
+        <Button variant="outline" nativeButton={false} render={<Link href="/collaborations" />}>
           View collaborations
         </Button>
       </div>
       <div>
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">Recent activity</h2>
+        <h2 className="mb-3 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">Recent activity</h2>
         <RecentList
           items={recent}
           emptyIcon={Inbox}

@@ -43,6 +43,16 @@ export function CollaborationsTable({
   const [tab, setTab] = useState<(typeof TABS)[number]>("All");
   const [pendingId, setPendingId] = useState<string | null>(null);
 
+  const counts = useMemo(
+    () => ({
+      All: rows.length,
+      Active: rows.filter((r) => r.status === "ACTIVE").length,
+      "Needs action": rows.filter((r) => r.status === "PENDING").length,
+      Completed: rows.filter((r) => r.status === "COMPLETED").length,
+    }),
+    [rows]
+  );
+
   const filtered = useMemo(() => {
     switch (tab) {
       case "Active":
@@ -76,10 +86,11 @@ export function CollaborationsTable({
 
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as (typeof TABS)[number])}>
-      <TabsList>
+      <TabsList className="h-auto! max-w-full overflow-x-auto rounded-lg border border-border bg-muted p-1 [scrollbar-width:none]">
         {TABS.map((t) => (
-          <TabsTrigger key={t} value={t}>
+          <TabsTrigger key={t} value={t} className="rounded-md px-3 py-1.5">
             {t}
+            <span className="font-mono text-[11px] text-muted-foreground tabular-nums">{counts[t]}</span>
           </TabsTrigger>
         ))}
       </TabsList>
@@ -97,8 +108,8 @@ export function CollaborationsTable({
             }
           />
         ) : (
-          <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
-          <Table className="[&_td]:px-4 [&_td]:py-3 [&_th]:px-4">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <Table className="[&_td]:px-5 [&_td]:py-3.5 [&_th]:px-5 [&_thead_tr]:bg-muted/40">
             <TableHeader>
               <TableRow>
                 <TableHead>{role === "CREATOR" ? "Brand" : "Creator"}</TableHead>
@@ -112,7 +123,7 @@ export function CollaborationsTable({
               {filtered.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2.5 font-heading">
                       <PersonAvatar name={row.counterpartyName} size="sm" />
                       {row.counterpartyName}
                     </div>
@@ -120,7 +131,7 @@ export function CollaborationsTable({
                   <TableCell>
                     <StatusBadge status={row.status} />
                   </TableCell>
-                  <TableCell>{formatUSD(row.price)}</TableCell>
+                  <TableCell className="font-mono tabular-nums">{formatUSD(row.price)}</TableCell>
                   <TableCell>
                     {role === "CREATOR" && row.status === "PENDING" && (
                       <div className="flex gap-2">
@@ -155,14 +166,14 @@ export function CollaborationsTable({
                         href={row.postUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium underline underline-offset-4"
+                        className="font-heading font-medium text-primary underline-offset-4 hover:underline"
                       >
                         View post ↗
                       </a>
                     )}
                     {row.status === "DECLINED" && <span className="text-muted-foreground">—</span>}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="font-mono text-muted-foreground tabular-nums">
                     {row.dueDate ? formatDate(row.dueDate) : "—"}
                   </TableCell>
                 </TableRow>

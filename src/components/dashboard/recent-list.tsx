@@ -29,18 +29,18 @@ export function RecentList({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card">
       {items.map((item, i) => (
         <Link
           key={item.id}
           href="/collaborations"
-          className={`flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50 ${
+          className={`flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-muted/60 ${
             i !== items.length - 1 ? "border-b border-border" : ""
           }`}
         >
           <PersonAvatar name={item.name} size="sm" />
           <span className="flex-1 truncate text-sm font-medium">{item.name}</span>
-          <span className="text-sm text-muted-foreground">{formatUSD(item.price)}</span>
+          <span className="font-mono text-sm text-muted-foreground tabular-nums">{formatUSD(item.price)}</span>
           <StatusBadge status={item.status} />
         </Link>
       ))}
