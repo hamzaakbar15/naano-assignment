@@ -24,3 +24,7 @@ export const COLLAB_STATUS_LABELS = {
   DECLINED: "Declined",
   COMPLETED: "Completed",
 } as const;
+
+// Sample address for the legal pages. The reserved `.example` domain can't
+// receive mail, so swap in the real support inbox before launch.
+export const CONTACT_EMAIL = "hello@naano.example";

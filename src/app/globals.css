@@ -75,6 +75,50 @@
   .bg-brand-strip {
     background-image: linear-gradient(90deg, var(--brand-violet), var(--brand-blue), var(--brand-teal));
   }
+  /* Landing page backdrop: faint brand-colour glows scattered down the page
+     over the flat background. Strength comes from the --glow-* tokens, which
+     are a touch stronger in dark mode so they still read on #0b0d10. */
+  .bg-page-glow {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(56rem 36rem at 10% 0%, var(--glow-violet), transparent 70%),
+      radial-gradient(48rem 32rem at 95% 8%, var(--glow-blue), transparent 70%),
+      radial-gradient(52rem 34rem at 5% 45%, var(--glow-blue), transparent 70%),
+      radial-gradient(52rem 34rem at 95% 68%, var(--glow-violet), transparent 70%),
+      radial-gradient(56rem 32rem at 45% 100%, var(--glow-teal), transparent 70%);
+    background-repeat: no-repeat;
+  }
+  /* Login/register side panel: the same glow tokens, pulled into the corners of
+     a card-coloured panel so it reads a little richer than the page. */
+  .bg-panel-glow {
+    background-color: var(--card);
+    background-image:
+      radial-gradient(40rem 30rem at 0% 0%, var(--glow-violet), transparent 70%),
+      radial-gradient(36rem 30rem at 100% 100%, var(--glow-blue), transparent 70%),
+      radial-gradient(28rem 22rem at 100% 8%, var(--glow-teal), transparent 70%),
+      radial-gradient(30rem 24rem at 0% 100%, var(--glow-violet), transparent 70%);
+    background-repeat: no-repeat;
+  }
+  /* Landing page decorative cubes: slow bob + tilt. Duration/delay are set
+     per cube inline so they drift out of sync. */
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-9px) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(9px) rotate(6deg);
+  }
 }
 
 @layer base {
@@ -123,6 +167,10 @@
     --status-active-bg: #e3eafe;
     --status-completed: #1f7a47;
     --status-completed-bg: #e1f5ea;
+
+    --glow-violet: rgb(139 92 246 / 0.16);
+    --glow-blue: rgb(74 90 240 / 0.13);
+    --glow-teal: rgb(20 184 166 / 0.1);
   }
   .dark {
     --background: #0b0d10;
@@ -164,6 +212,10 @@
     --status-active-bg: #20264a;
     --status-completed: #7fdda6;
     --status-completed-bg: #123321;
+
+    --glow-violet: rgb(139 92 246 / 0.2);
+    --glow-blue: rgb(74 90 240 / 0.18);
+    --glow-teal: rgb(20 184 166 / 0.12);
   }
   * {
     @apply border-border outline-ring/50;

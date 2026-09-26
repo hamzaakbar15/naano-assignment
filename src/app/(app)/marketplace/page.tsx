@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Users, SearchX } from "lucide-react";
-import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { PersonAvatar } from "@/components/person-avatar";
 import { EmptyState } from "@/components/empty-state";
@@ -8,7 +7,7 @@ import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters
 import { BookButton } from "@/components/marketplace/book-button";
 import { formatUSD } from "@/lib/format";
 import { estimateReach } from "@/lib/estimate-reach";
-import type { Prisma } from "@prisma/client";
+import { listCreators } from "@/lib/creators";
 
 export default async function MarketplacePage({
   searchParams,
@@ -17,23 +16,7 @@ export default async function MarketplacePage({
 }) {
   const { q, industry } = searchParams;
 
-  const where: Prisma.CreatorProfileWhereInput = {
-    ...(industry ? { industries: { has: industry } } : {}),
-    ...(q
-      ? {
-          OR: [
-            { user: { name: { contains: q, mode: "insensitive" } } },
-            { headline: { contains: q, mode: "insensitive" } },
-          ],
-        }
-      : {}),
-  };
-
-  const creators = await prisma.creatorProfile.findMany({
-    where,
-    include: { user: { select: { name: true } } },
-    orderBy: { pricePerPost: "asc" },
-  });
+  const creators = await listCreators({ q, industry });
 
   const filtered = Boolean(q || industry);
 
